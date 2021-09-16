@@ -47,6 +47,7 @@ module ice_comp_nuopc
   use CICE_RunMod            , only : CICE_Run
   use perf_mod               , only : t_startf, t_stopf, t_barrierf
   use ice_timers
+  use shr_mem_mod            , only : record_memusage
 !$ use OMP_LIB               , only : omp_set_num_threads
   implicit none
 
@@ -406,6 +407,8 @@ contains
     ! determine instance information
     !----------------------------------------------------------------------------
 
+    call record_memusage(mpi_comm_ice, 'ice.0.InitalizeRealize-start.csv')
+
     call get_component_instance(gcomp, inst_suffix, inst_index, rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
@@ -750,6 +753,7 @@ contains
     if (dbug > 5) call ESMF_LogWrite(subname//' done', ESMF_LOGMSG_INFO)
 
     call t_stopf ('cice_init_total')
+    call record_memusage(mpi_comm_ice, 'ice.1.InitalizeRealize-end.csv')
 
   end subroutine InitializeRealize
 
